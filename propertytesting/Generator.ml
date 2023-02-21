@@ -106,5 +106,17 @@ module Generator :
     val partitioned_map : ('a -> bool) -> (('a -> 'b) * ('a -> 'b)) -> 'a t -> 'b t
   end =
   struct
-    (* TODO : Implémenter le type et tous les éléments de la signature *)
+  
+    type 'a t = unit -> 'a
+
+    let bool prob () =
+      Random.self_init ();
+      Random.int 100 < int_of_float (prob *. 100.)
+
+    let int a b () =
+      Random.int (b - a + 1) + a
+
+    let int_nonneg n () =
+      Random.int (n+1)
+      
   end ;;
