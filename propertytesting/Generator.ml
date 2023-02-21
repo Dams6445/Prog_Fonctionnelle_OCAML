@@ -119,4 +119,12 @@ module Generator :
     let int_nonneg n () =
       Random.int (n+1)
       
+    (* TODO : Faire en sorte que y soit inclus *)
+    let float x y () =
+      Random.float (y -. x) +. x 
+      
+    (* TODO : Faire en sorte que x soit inclus *)
+    let float_nonneg x () =
+      Random.float (x)
+      
   end ;;
