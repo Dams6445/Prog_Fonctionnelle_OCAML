@@ -85,6 +85,64 @@ module Reduction :
   end =
   struct
     type 'a t = 'a -> 'a list ;;
+    let empty _ = [] ;;
 
+    (* TYPES DE BASE *)
+    let int n =
+      let rec aux n =
+        if n = 0 then []
+        else n :: aux (n / 2)
+      in
+        aux (abs n) ;;
+    
+    let int_nonneg n =
+      let rec aux n =
+        if n = 0 then []
+        else n :: aux (n / 2)
+      in
+        aux n ;;
+
+    let float x = 
+      let rec aux x =
+        if x = 0. then []
+        else x :: aux (x /. 2.)
+      in
+        aux (abs_float x) ;;
+    
+    let float_nonneg x =
+      let rec aux x =
+        if x = 0. then []
+        else x :: aux (x /. 2.)
+      in
+        aux x ;;
+    
+    let char c =
+      let rec aux c =
+        if c = 'a' then []
+        else c :: aux (char_of_int (int_of_char c - 1))
+      in
+        aux c ;;
+    
+    let alphanum c =
+      let rec aux c =
+        if c = '0' then []
+        else c :: aux (char_of_int (int_of_char c - 1))
+      in
+        aux c ;;
+
+    (* LISTES *)
+
+    let list red l =
+      let rec aux l =
+        if l = [] then []
+        else l :: aux (List.tl l)
+      in
+        aux l ;;
+
+    (* TRANSFORMATIONS *)
+
+    let combine red1 red2 (x, y) = [(red1 x, red2 y)] ;;
+    let filter p red x = List.filter p (red x) ;;
+    let string red s = [s] ;;
     (* TODO : Implémenter tous les éléments de la signature manquants *)
   end ;;
