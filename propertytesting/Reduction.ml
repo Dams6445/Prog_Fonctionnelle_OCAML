@@ -132,13 +132,18 @@ module Reduction :
 
     (* LISTES *)
 
-    let list red l =
-      let rec aux acc lst = 
-        match lst with
-        | [] -> List.rev acc
-        | hd :: tl -> aux (red hd :: acc) tl
+    let list (red : 'a t) : ('a list) t =
+      let rec aux acc remaining =
+        match remaining with
+        | [] -> [List.rev acc]
+        | hd :: tl ->
+          let reduced_hd = red hd in
+          List.fold_left
+            (fun acc_list reduced -> aux (reduced :: acc) tl @ acc_list)
+            []
+            reduced_hd
       in
-        aux [] l ;;
+      fun l -> aux [] l ;;    
 
     (* TRANSFORMATIONS *)
 
@@ -163,5 +168,4 @@ module Reduction :
     let string red s =
       List.concat (List.map (fun c -> List.map (String.make 1) (red c)) (List.of_seq (String.to_seq s)))
     ;;
-    (* TODO : Implémenter tous les éléments de la signature manquants *)
   end ;;
