@@ -88,47 +88,57 @@ module Reduction :
     let empty _ = [] ;;
 
     (* TYPES DE BASE *)
-    let int n = 
-      let rec aux n =
-        if n = 0 then []
-        else n :: aux (n / 2)
-      in
-        aux (abs n) ;;
-    
-    let int_nonneg n =
-      let rec aux n =
-        if n = 0 then []
-        else n :: aux (n / 2)
-      in
-        aux n ;;
+      
+    let int : int t = fun n ->
+      List.init (2 * abs n + 1) (fun x -> - (abs n) + x)
+    ;;
 
-    let float x = 
-      let rec aux x =
-        if x = 0. then []
-        else x :: aux (x /. 2.)
-      in
-        aux (abs_float x) ;;
+    let int_nonneg : int t = fun n ->
+      List.init (n + 1) (fun x -> x)
+    ;;
     
-    let float_nonneg x =
-      let rec aux x =
-        if x = 0. then []
-        else x :: aux (x /. 2.)
-      in
-        aux x ;;
+    let float : float t = fun x ->
+      List.init (2 * int_of_float (abs_float x) + 1) (fun n -> -. (abs_float x) +. (0.2 *. float_of_int n))
+    ;;
+
+    let float_nonneg : float t = fun x ->
+      List.init (int_of_float x + 1) (fun n -> 0.2 *. float_of_int n)
+    ;;
     
-    let char c =
-      let rec aux c =
-        if c = 'a' then []
-        else c :: aux (char_of_int (int_of_char c - 1))
-      in
-        aux c ;;
+    let char : char t = fun c ->
+      if (int_of_char c) >= (int_of_char 'A') then
+        if (int_of_char c) < (int_of_char 'Z') then
+          List.init ((int_of_char c) - (int_of_char 'A') + 1) (fun n -> char_of_int (int_of_char 'A' + n))
+        else
+          []
+      else if (int_of_char c) >= (int_of_char 'a') then
+        if (int_of_char c) < (int_of_char 'z') then
+          List.init ((int_of_char c) - (int_of_char 'a') + 1) (fun n -> char_of_int (int_of_char 'a' + n))
+        else
+          []
+      else
+        []
+    ;;
     
-    let alphanum c =
-      let rec aux c =
-        if c = '0' then []
-        else c :: aux (char_of_int (int_of_char c - 1))
-      in
-        aux c ;;
+    let alphanum : char t = fun c ->
+      if (int_of_char c) >= (int_of_char 'A') then
+        if (int_of_char c) < (int_of_char 'Z') then
+          List.init ((int_of_char c) - (int_of_char 'A') + 1) (fun n -> char_of_int (int_of_char 'A' + n))
+        else
+          []
+      else if (int_of_char c) >= (int_of_char 'a') then
+        if (int_of_char c) < (int_of_char 'z') then
+          List.init ((int_of_char c) - (int_of_char 'a') + 1) (fun n -> char_of_int (int_of_char 'a' + n))
+        else
+          []
+      else if (int_of_char c) >= (int_of_char '0') then
+        if (int_of_char c) < (int_of_char '9') then
+          List.init ((int_of_char c) - (int_of_char '0') + 1) (fun n -> char_of_int (int_of_char '0' + n))
+        else
+          []
+      else
+        []
+    ;;
 
     (* LISTES *)
 
